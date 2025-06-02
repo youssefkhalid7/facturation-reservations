@@ -3,17 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Générateur de Factures</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
-    .container { background: white; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    h1 { text-align: center; font-size: 24px; }
-    input[type=file] { display: block; margin: 20px auto; }
-    button { display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; background-color: #007BFF; color: white; }
-    button:hover { background-color: #0056b3; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
@@ -22,53 +12,9 @@
   <button onclick="processExcel()">Générer les Factures</button>
 </div>
 
-<script>
-async function processExcel() {
-  const fileInput = document.getElementById('excelFile');
-  if (!fileInput.files[0]) return alert('Veuillez téléverser un fichier Excel.');
-
-  const file = fileInput.files[0];
-  const reader = new FileReader();
-
-  reader.onload = async function(e) {
-    const data = new Uint8Array(e.target.result);
-    const workbook = XLSX.read(data, { type: 'array' });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet);
-
-    const JSZipInstance = new JSZip();
-    const { jsPDF } = window.jspdf;
-
-    const okReservations = rows.filter(r => r.Status === 'OK');
-
-    for (const row of okReservations) {
-      const doc = new jsPDF();
-      doc.text("FACTURE", 90, 20);
-      doc.setFontSize(10);
-      doc.text(`Client: ${row["Booker name"]}`, 20, 40);
-      doc.text(`Nom de l'hôtel: ${row["Property name"]}`, 20, 50);
-      doc.text(`Ville: ${row.City}`, 20, 60);
-      doc.text(`Arrivée: ${row.Arrival}`, 20, 70);
-      doc.text(`Départ: ${row.Departure}`, 20, 80);
-      doc.text(`Chambres: ${row.Rooms}`, 20, 90);
-      doc.text(`Personnes: ${row.Persons}`, 20, 100);
-      doc.text(`Montant: ${row["Final amount"]} ${row.Currency}`, 20, 110);
-
-      const pdfBlob = doc.output('blob');
-      const buffer = await pdfBlob.arrayBuffer();
-      const filename = `${row["Booker name"].replace(/[^a-z0-9]/gi, '_')}_${row["Reservation number"]}.pdf`;
-      JSZipInstance.file(filename, buffer);
-    }
-
-    const zipBlob = await JSZipInstance.generateAsync({ type: 'blob' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(zipBlob);
-    link.download = 'factures_clients.zip';
-    link.click();
-  };
-
-  reader.readAsArrayBuffer(file);
-}
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
