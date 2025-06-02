@@ -28,90 +28,100 @@ async function processExcel() {
       const doc = new jsPDF({ unit: 'pt', format: 'a4' });
       let y = 50;
 
-      // Logo
+      // Logo Booking.com
       doc.addImage(logoDataUrl, 'PNG', 40, y, 150, 50);
       y += 80;
 
+      // Booking number block
       doc.setFontSize(10);
-      doc.setTextColor(150); // Light gray for Booking number
+      doc.setTextColor(100);
       doc.text('Booking number:', 400, 50);
       doc.setTextColor(0);
+      doc.setFont(undefined, 'bold');
       doc.text(row["Reservation number"].toString(), 500, 50);
+      doc.setFont(undefined, 'normal');
 
-      // Draw a separator line
+      // Separator
       y += 10;
-      doc.setDrawColor(200); // Light gray separator
+      doc.setDrawColor(200);
       doc.setLineWidth(0.5);
       doc.line(40, y, 550, y);
       y += 15;
 
-      // Guest Information section
+      // Guest Information
       doc.setFontSize(12);
       doc.setTextColor(100);
       doc.text('Guest information:', 40, y);
-      y += 15;
-
+      y += 18;
       doc.setFontSize(11);
       doc.setTextColor(0);
+      doc.setFont(undefined, 'bold');
       doc.text(row["Guest name"], 40, y); y += 15;
+      doc.setFont(undefined, 'normal');
       doc.text(row["Country"], 40, y); y += 15;
       doc.text(`Total guests: ${row["Persons"]}`, 40, y); y += 15;
       doc.text(`Total units/rooms: ${row["Rooms"]}`, 40, y); y += 15;
       doc.text(`Preferred language: English`, 40, y); y += 15;
-      doc.text(`Approximate arrival time: No time provided`, 40, y); y += 20;
+      doc.text(`Approximate arrival time: No time provided`, 40, y); y += 25;
 
-      // Draw separator
+      // Separator
       doc.setDrawColor(200);
       doc.line(40, y, 550, y);
       y += 15;
 
-      // Check-in/out block
+      // Check-in/Check-out
       doc.setFontSize(10);
-      doc.setTextColor(150);
+      doc.setTextColor(100);
       doc.text('Check-in:', 400, y - 90);
       doc.setTextColor(0);
+      doc.setFont(undefined, 'bold');
       doc.text(row["Arrival"], 470, y - 90);
-      doc.setTextColor(150);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(100);
       doc.text('Check-out:', 400, y - 75);
       doc.setTextColor(0);
+      doc.setFont(undefined, 'bold');
       doc.text(row["Departure"], 470, y - 75);
-      doc.setTextColor(150);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(100);
       doc.text('Length of stay:', 400, y - 60);
       doc.setTextColor(0);
       doc.text(`${row["Room nights"]} night(s)`, 500, y - 60);
 
-      // Total price and commission block
-      doc.setFontSize(12);
-      doc.text('Total price:', 40, y);
-      doc.setFontSize(11);
-      doc.text(`€ ${row["Final amount"]}`, 120, y);
-      y += 30;
-
-      doc.setFontSize(12);
-      doc.text('Commission:', 400, y - 30);
-      doc.setFontSize(11);
-      doc.text(`€ ${row["Commission amount"]}`, 480, y - 30);
-      doc.setFontSize(12);
-      doc.text('Commissionable amount:', 400, y - 15);
-      doc.setFontSize(11);
-      doc.text(`€ ${row["Original amount"]}`, 530, y - 15);
-
-      // Draw separator
-      y += 10;
-      doc.setDrawColor(200);
-      doc.line(40, y, 550, y);
-      y += 15;
-
-      // Booking summary with proper styling
+      // Total price
       doc.setFontSize(12);
       doc.setTextColor(0);
+      doc.setFont(undefined, 'normal');
+      doc.text('Total price:', 40, y);
+      doc.setFont(undefined, 'bold');
+      doc.text(`€ ${row["Final amount"]}`, 120, y);
+      doc.setFont(undefined, 'normal');
+      y += 30;
+
+      // Commission
+      doc.setFontSize(12);
+      doc.text('Commission:', 400, y - 30);
+      doc.setFont(undefined, 'bold');
+      doc.text(`€ ${row["Commission amount"]}`, 480, y - 30);
+      doc.setFont(undefined, 'normal');
+      doc.text('Commissionable amount:', 400, y - 15);
+      doc.setFont(undefined, 'bold');
+      doc.text(`€ ${row["Original amount"]}`, 530, y - 15);
+      doc.setFont(undefined, 'normal');
+      y += 10;
+
+      // Separator
+      doc.setDrawColor(200);
+      doc.line(40, y, 550, y);
+      y += 20;
+
+      // Booking Summary
+      doc.setFontSize(12);
       doc.text('Twin Beds Room - Pool View', 40, y); y += 15;
       doc.text('Breakfast included', 40, y); y += 15;
-
       doc.setFontSize(11);
       const detailText = '02 - 03 Jun 2025 Non-refundable (STANDARD RATE), United States (Non-refundable (STANDARD RATE) -10%) 1 x € 68,85';
       doc.text(detailText, 40, y, { maxWidth: 500 }); y += 30;
-
       doc.setFontSize(11);
       doc.text(`Total unit/room price € ${row["Final amount"]}`, 40, y); y += 15;
       doc.text('Rate includes 20% VAT', 40, y);
@@ -121,7 +131,7 @@ async function processExcel() {
       doc.setDrawColor(200);
       doc.line(40, y, 550, y);
 
-      // Save PDF to ZIP
+      // Save
       const pdfBlob = doc.output('blob');
       const buffer = await pdfBlob.arrayBuffer();
       const safeName = `${(row["Booker name"] || "invoice").replace(/[^a-z0-9]/gi, '_')}_${row["Reservation number"] || Date.now()}.pdf`;
