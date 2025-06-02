@@ -14,7 +14,6 @@ async function processExcel() {
     const JSZipInstance = new JSZip();
     const { jsPDF } = window.jspdf;
 
-    // Load logo
     const logoDataUrl = await fetch('logo.webp')
       .then(res => res.blob())
       .then(blob => new Promise(resolve => {
@@ -26,75 +25,84 @@ async function processExcel() {
     const okReservations = rows.filter(r => r.Status === 'OK');
 
     for (const row of okReservations) {
-      const doc = new jsPDF();
+      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+      let y = 50;
 
-      doc.addImage(logoDataUrl, 'PNG', 10, 10, 40, 20);
-      doc.setFontSize(18);
-      doc.text('FACTURE CLIENT', 70, 20);
+      // Logo and Booking.com style
+      doc.addImage(logoDataUrl, 'PNG', 40, y, 150, 50);
+      y += 80;
 
-      doc.setFontSize(11);
-      let y = 40;
-
-      const fields = [
-        ['Reservation number', 'Numéro de réservation'],
-        ['Invoice number', 'Numéro de facture'],
-        ['Booked on', 'Réservé le'],
-        ['Arrival', 'Arrivée'],
-        ['Departure', 'Départ'],
-        ['Booker name', 'Nom du réservataire'],
-        ['Guest name', 'Nom du client'],
-        ['Rooms', 'Nombre de chambres'],
-        ['Persons', 'Nombre de personnes'],
-        ['Room nights', 'Nuits'],
-        ['Commission %', 'Pourcentage de commission'],
-        ['Original amount', 'Montant original'],
-        ['Final amount', 'Montant final'],
-        ['Commission amount', 'Montant de la commission'],
-        ['Guest request', 'Demande spéciale'],
-        ['Currency', 'Devise'],
-        ['Hotel id', 'ID de l\'hôtel'],
-        ['Property name', 'Nom de l\'établissement'],
-        ['City', 'Ville'],
-        ['Country', 'Pays']
-      ];
-
-      for (const [col, label] of fields) {
-        doc.text(`${label}: ${row[col]}`, 20, y);
-        y += 10;
-      }
-
-      // Ajout du récapitulatif
-      y += 5;
-      doc.setFontSize(12);
-      doc.text('--- Récapitulatif de la réservation ---', 20, y); y += 10;
-      doc.setFontSize(11);
-      doc.text('Chambre Lits Jumeaux - Vue sur Piscine', 20, y); y += 10;
-      doc.text('Petit-déjeuner inclus', 20, y); y += 10;
-
-      const detailText = 'Non remboursable (TARIF STANDARD), United States (Non remboursable (TARIF STANDARD) -10%)';
-      doc.text(detailText, 20, y); y += 10;
-      doc.text(`1 x € ${row["Final amount"]}`, 20, y); y += 10;
-
-      doc.setFontSize(12);
-      doc.text(`Prix total par unité/chambre: € ${row["Final amount"]}`, 20, y); y += 10;
       doc.setFontSize(10);
-      doc.text('Inclut TVA 20%', 20, y); y += 10;
+      doc.setTextColor(100);
+      doc.text(`Booking number:`, 400, 50);
+      doc.setTextColor(0);
+      doc.text(row["Reservation number"].toString(), 500, 50);
 
-      // Taxe de séjour (si applicable)
-      const taxeSejour = 2.5 * (parseInt(row['Persons'] || 1));
-      doc.text(`Taxe de séjour: € ${taxeSejour.toFixed(2)}`, 20, y); y += 10;
+      // Guest info section
+      doc.setFontSize(12);
+      doc.setTextColor(0);
+      doc.text(`Guest information:`, 40, y);
+      y += 15;
+      doc.setFontSize(11);
+      doc.text(row["Guest name"], 40, y); y += 15;
+      doc.text(row["Country"], 40, y); y += 15;
+      doc.text(`Total guests: ${row["Persons"]}`, 40, y); y += 15;
+      doc.text(`Total units/rooms: ${row["Rooms"]}`, 40, y); y += 15;
+      doc.text(`Preferred language: English`, 40, y); y += 15;
+      doc.text(`Approximate arrival time: No time provided`, 40, y); y += 20;
 
-      // Enregistrement dans le ZIP
+      // Check-in/out
+      doc.setTextColor(100);
+      doc.text(`Check-in:`, 400, y - 90);
+      doc.setTextColor(0);
+      doc.text(row["Arrival"], 470, y - 90);
+      doc.setTextColor(100);
+      doc.text(`Check-out:`, 400, y - 75);
+      doc.setTextColor(0);
+      doc.text(row["Departure"], 470, y - 75);
+      doc.setTextColor(100);
+      doc.text(`Length of stay:`, 400, y - 60);
+      doc.setTextColor(0);
+      doc.text(`${row["Room nights"]} night(s)`, 500, y - 60);
+
+      // Total price
+      doc.setFontSize(12);
+      doc.text(`Total price:`, 40, y);
+      doc.setFontSize(11);
+      doc.text(`€ ${row["Final amount"]}`, 120, y); y += 30;
+
+      // Commission details
+      doc.setFontSize(12);
+      doc.text(`Commission:`, 400, y - 30);
+      doc.setFontSize(11);
+      doc.text(`€ ${row["Commission amount"]}`, 480, y - 30);
+      doc.setFontSize(12);
+      doc.text(`Commissionable amount:`, 400, y - 15);
+      doc.setFontSize(11);
+      doc.text(`€ ${row["Original amount"]}`, 530, y - 15);
+      y += 20;
+
+      // Booking summary
+      doc.setFontSize(12);
+      doc.text('Chambre Lits Jumeaux - Pool View', 40, y); y += 15;
+      doc.text('Breakfast included', 40, y); y += 15;
+
+      doc.text('02 - 03 Jun 2025 Non-refundable (STANDARD RATE), United States (Non-refundable (STANDARD RATE) -10%) 1 x € 68,85', 40, y, { maxWidth: 500 }); y += 30;
+
+      doc.text(`Total unit/room price € ${row["Final amount"]}`, 40, y); y += 15;
+      doc.text(`Rate includes 20% VAT`, 40, y);
+
+      // Save PDF to ZIP
       const pdfBlob = doc.output('blob');
       const buffer = await pdfBlob.arrayBuffer();
-      const safeName = `${(row["Booker name"] || "facture").replace(/[^a-z0-9]/gi, '_')}_${row["Reservation number"] || Date.now()}.pdf`;
+      const safeName = `${(row["Booker name"] || "invoice").replace(/[^a-z0-9]/gi, '_')}_${row["Reservation number"] || Date.now()}.pdf`;
       JSZipInstance.file(safeName, buffer);
     }
 
     const zipBlob = await JSZipInstance.generateAsync({ type: 'blob' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(zipBlob);
-    link.download = 'factures_clients.zip';
+    link.download = 'customer_invoices.zip';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
