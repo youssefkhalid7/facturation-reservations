@@ -16,31 +16,37 @@ async function processExcel() {
     for (const row of rows.filter(r => r.Status === 'OK')) {
       const templateBytes = await fetch('facture_template.pdf').then(res => res.arrayBuffer());
       const pdfDoc = await PDFLib.PDFDocument.load(templateBytes);
+      const helveticaFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
       const page = pdfDoc.getPages()[0];
 
       const draw = (text, x, y, size = 11) => {
-        page.drawText(String(text), { x, y, size, font: page.doc.embedStandardFont(PDFLib.StandardFonts.Helvetica) });
+        page.drawText(String(text), {
+          x,
+          y,
+          size,
+          font: helveticaFont,
+        });
       };
 
-      // Adjusted positions (Y-axis down = lower on page)
-      draw(row["Reservation number"], 140, 730); // Booking number
-      draw(row["Guest name"], 140, 690);          // Guest info
-      draw(row["Country"], 140, 675);             // Country
-      draw(String(row["Persons"]), 140, 655);     // Total guests
-      draw(String(row["Rooms"]), 140, 640);       // Total units/rooms
-      draw("No time provided", 190, 625);         // Approx arrival time
-      draw(row["Arrival"], 140, 605);             // Check-in
-      draw(row["Departure"], 140, 590);           // Check-out
-      draw(`${row["Room nights"]} night`, 140, 570); // Length of stay
-      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, 140, 540); // Total price
+      // Match layout from reference invoice (4490222232.pdf)
+      draw(row["Reservation number"], 120, 725); // Booking number
+      draw(row["Guest name"], 120, 700);         // Guest name
+      draw(row["Country"], 120, 685);            // Country
+      draw(String(row["Persons"]), 120, 660);    // Total guests
+      draw(String(row["Rooms"]), 120, 645);      // Total units/rooms
+      draw("No time provided", 190, 630);        // Approx arrival time
 
-      draw(`€ ${parseFloat(row["Commission amount"]).toFixed(2)}`, 140, 505); // Commission
-      draw(`€ ${parseFloat(row["Original amount"]).toFixed(2)}`, 200, 490);   // Commissionable amount
+      draw(row["Arrival"], 120, 605);            // Check-in
+      draw(row["Departure"], 120, 590);          // Check-out
+      draw(`${row["Room nights"]} night`, 120, 570); // Length of stay
+
+      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, 120, 545); // Total price
+      draw(`€ ${parseFloat(row["Commission amount"]).toFixed(2)}`, 120, 515); // Commission
+      draw(`€ ${parseFloat(row["Original amount"]).toFixed(2)}`, 190, 500); // Commissionable amount
 
       const taxeTotale = (2.5 * parseInt(row["Persons"]) || 0).toFixed(2);
-      draw(`€ ${taxeTotale}`, 140, 430); // Taxe de séjour
-
-      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, 200, 405); // Total unit/room price
+      draw(`€ ${taxeTotale}`, 120, 445); // Tourist tax
+      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, 190, 425); // Total unit/room price
 
       const pdfBytes = await pdfDoc.save();
       const safeName = `${(row["Booker name"] || "invoice").replace(/[^a-z0-9]/gi, '_')}_${row["Reservation number"]}.pdf`;
