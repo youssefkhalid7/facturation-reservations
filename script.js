@@ -28,25 +28,38 @@ async function processExcel() {
         });
       };
 
-      // Match layout from reference invoice (4490222232.pdf)
-      draw(row["Reservation number"], 120, 725); // Booking number
-      draw(row["Guest name"], 120, 700);         // Guest name
-      draw(row["Country"], 120, 685);            // Country
-      draw(String(row["Persons"]), 120, 660);    // Total guests
-      draw(String(row["Rooms"]), 120, 645);      // Total units/rooms
-      draw("No time provided", 190, 630);        // Approx arrival time
+      // Commencer en haut à gauche et descendre ligne par ligne
+      draw(`Booking number: ${row["Reservation number"]}`, 50, 690);
+      draw(`Guest information: ${row["Guest name"]}`, 50, 670);
+      draw(`${row["Country"]}`, 50, 655);
 
-      draw(row["Arrival"], 120, 605);            // Check-in
-      draw(row["Departure"], 120, 590);          // Check-out
-      draw(`${row["Room nights"]} night`, 120, 570); // Length of stay
+      draw(`Total guests: ${row["Persons"]}`, 50, 630);
+      draw(`Total units/rooms: ${row["Rooms"]}`, 50, 615);
+      draw(`Approximate arrival time: No time provided`, 50, 600);
 
-      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, 120, 545); // Total price
-      draw(`€ ${parseFloat(row["Commission amount"]).toFixed(2)}`, 120, 515); // Commission
-      draw(`€ ${parseFloat(row["Original amount"]).toFixed(2)}`, 190, 500); // Commissionable amount
+      draw(`Check-in: ${row["Arrival"]}`, 50, 575);
+      draw(`Check-out: ${row["Departure"]}`, 50, 560);
+      draw(`Length of stay: ${row["Room nights"]} night`, 50, 545);
+
+      draw(`Total price: € ${parseFloat(row["Final amount"]).toFixed(2)}`, 50, 520);
+      draw(`Commission: € ${parseFloat(row["Commission amount"]).toFixed(2)}`, 50, 505);
+      draw(`Commissionable amount: € ${parseFloat(row["Original amount"]).toFixed(2)}`, 50, 490);
+
+      // Description de la chambre
+      draw(`Chambre Lits Jumeaux - Vue sur Piscine`, 50, 465);
+      draw(`Breakfast included`, 50, 450);
+      draw(`02 - 03 Jun 2025 Non remboursable (TARIF STANDARD), ${row["Country"]}`, 50, 435);
+      draw(`1 x € ${parseFloat(row["Original amount"]).toFixed(2)}`, 50, 420);
+
+      // Taxes
+      draw(`Taxe de séjour`, 50, 395);
+      draw(`€ 2,50 par personne et par nuit`, 50, 380);
 
       const taxeTotale = (2.5 * parseInt(row["Persons"]) || 0).toFixed(2);
-      draw(`€ ${taxeTotale}`, 120, 445); // Tourist tax
-      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, 190, 425); // Total unit/room price
+      draw(`€ ${taxeTotale}`, 50, 365);
+
+      draw(`Total unit/room price € ${parseFloat(row["Final amount"]).toFixed(2)}`, 50, 340);
+      draw(`Rate includes 20 % de TVA`, 50, 325);
 
       const pdfBytes = await pdfDoc.save();
       const safeName = `${(row["Booker name"] || "invoice").replace(/[^a-z0-9]/gi, '_')}_${row["Reservation number"]}.pdf`;
