@@ -79,7 +79,7 @@ async function processExcel() {
       // rightAlign(`€ ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 70, 440, 12);
 
       // Détail séjour (ligne du bas, droite)
-      rightAlign(`1 x € ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 40, 540, 12);
+      rightAlign(`1 x € ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 40, 530, 12);
 
 
       // Taxe de séjour (montant total, droite)
