@@ -14,6 +14,8 @@ async function processExcel() {
     const JSZipInstance = new JSZip();
 
     for (const row of rows.filter(r => r.Status === 'OK')) {
+      console.log(Object.keys(row));
+      console.log(row);
       const templateBytes = await fetch('facture_template.pdf').then(res => res.arrayBuffer());
       const pdfDoc = await PDFLib.PDFDocument.load(templateBytes);
       const helveticaFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
@@ -46,7 +48,10 @@ async function processExcel() {
       draw(row["Guest name"], 40, 720, 12);
 
       // Total guests (en face de "Total guests:")
-      draw(row["Persons"], 40, 675, 12);
+      const personsKey = Object.keys(row).find(
+        k => k.trim().toLowerCase() === "persons"
+      );
+      draw(row[personsKey], 40, 675, 12);
 
       // Total units/rooms (en face de "Total units/rooms:")
       draw(row["Rooms"], 40, 625, 12);
