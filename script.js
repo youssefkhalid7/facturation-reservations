@@ -55,19 +55,28 @@ async function processExcel() {
       rightAlign(row["Arrival"], pageWidth - 50, 725, 12);
 
       // Departure (Check-out)
-      rightAlign(row["Departure"], pageWidth - 50, 715, 12);
+      rightAlign(row["Departure"], pageWidth - 50, 690, 12);
 
       // Length of stay
-      rightAlign(`${row["Room nights"]} night${parseInt(row["Room nights"]) > 1 ? "s" : ""}`, pageWidth - 50, 655, 12);
+      rightAlign(`${row["Room nights"]} night${parseInt(row["Room nights"]) > 1 ? "s" : ""}`, pageWidth - 50, 645, 12);
 
-      // Total price (gauche, sous la ligne)
-      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, 40, 450, 12);
+      // Approximate arrival time (toujours "No time provided")
+      draw("No time provided", 40, 700, 12);
+
+      // Total price (gauche, sous la ligne, en gras)
+      const helveticaBold = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+      page.drawText(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, {
+        x: 40,
+        y: 660,
+        size: 12,
+        font: helveticaBold,
+      });
 
       // Commission (droite)
-      rightAlign(`€ ${parseFloat(row["Commission amount"]).toFixed(2)}`, pageWidth - 50, 620, 12);
+      rightAlign(`€ ${parseFloat(row["Commission amount"]).toFixed(2)}`, pageWidth - 70, 660, 12);
 
       // Commissionable amount (droite)
-      rightAlign(`€ ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 50, 600, 12);
+      rightAlign(`€ ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 70, 640, 12);
 
       // Détail séjour (ligne du bas, droite)
       rightAlign(`1 x € ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 50, 510, 12);
@@ -77,7 +86,7 @@ async function processExcel() {
       rightAlign(`€ ${taxeTotale}`, pageWidth - 70, 480, 12);
 
       // Total unit/room price (gauche, bas)
-      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, pageWidth - 50, 340, 12);
+      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, pageWidth - 70, 340, 12);
 
       // --- Génération du PDF ---
       const pdfBytes = await pdfDoc.save();
