@@ -40,44 +40,44 @@ async function processExcel() {
       };
 
       // Booking number (en haut à droite)
-      rightAlign(row["Reservation number"], pageWidth - 50, 755, 12);
+      rightAlign(row["Reservation number"], pageWidth - 50, 780, 12);
 
       // Guest name (à gauche, sous "Guest information:")
-      draw(row["Guest name"], 40, 715, 12);
+      draw(row["Guest name"], 40, 720, 12);
 
       // Total guests (en face de "Total guests:")
       draw(row["Persons"], 40, 675, 12);
 
       // Total units/rooms (en face de "Total units/rooms:")
-      draw(row["Rooms"], 40, 635, 12);
+      draw(row["Rooms"], 40, 625, 12);
 
       // Arrival (Check-in)
-      rightAlign(row["Arrival"], pageWidth - 70, 715, 12);
+      rightAlign(row["Arrival"], pageWidth - 50, 725, 12);
 
       // Departure (Check-out)
-      rightAlign(row["Departure"], pageWidth - 70, 695, 12);
+      rightAlign(row["Departure"], pageWidth - 50, 715, 12);
 
       // Length of stay
-      rightAlign(`${row["Room nights"]} night${parseInt(row["Room nights"]) > 1 ? "s" : ""}`, pageWidth - 70, 675, 12);
+      rightAlign(`${row["Room nights"]} night${parseInt(row["Room nights"]) > 1 ? "s" : ""}`, pageWidth - 50, 655, 12);
 
       // Total price (gauche, sous la ligne)
-      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, 120, 600, 12);
+      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, 40, 450, 12);
 
       // Commission (droite)
-      rightAlign(`€ ${parseFloat(row["Commission amount"]).toFixed(2)}`, pageWidth - 70, 620, 12);
+      rightAlign(`€ ${parseFloat(row["Commission amount"]).toFixed(2)}`, pageWidth - 50, 620, 12);
 
       // Commissionable amount (droite)
-      rightAlign(`€ ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 70, 600, 12);
+      rightAlign(`€ ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 50, 600, 12);
 
       // Détail séjour (ligne du bas, droite)
-      rightAlign(`1 x € ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 70, 510, 12);
+      rightAlign(`1 x € ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 50, 510, 12);
 
       // Taxe de séjour (montant total, droite)
       const taxeTotale = (2.5 * parseInt(row["Persons"]) || 0).toFixed(2);
       rightAlign(`€ ${taxeTotale}`, pageWidth - 70, 480, 12);
 
       // Total unit/room price (gauche, bas)
-      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, 170, 450, 12);
+      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, pageWidth - 50, 340, 12);
 
       // --- Génération du PDF ---
       const pdfBytes = await pdfDoc.save();
