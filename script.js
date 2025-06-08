@@ -45,7 +45,8 @@ async function processExcel() {
       rightAlign(row["Reservation number"], pageWidth - 40, 780, 12);
 
       // Guest name (à gauche, sous "Guest information:")
-      draw(row["Guest name"], 40, 720, 12);
+      const guestName = (row["Guest name"] || row["Booker name"]).split(/[\r\n]+/)[0];
+      draw(guestName, 40, 720, 12);
 
       // Total guests (en face de "Total guests:")
       const personsKey = Object.keys(row).find(
