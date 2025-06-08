@@ -73,13 +73,13 @@ async function processExcel() {
       });
 
       // Commission amount(droite)
-      rightAlign(`€ ${parseFloat(row["Commission amount"]).toFixed(2)}`, pageWidth - 70, 510, 12);
+      rightAlign(`€ ${parseFloat(row["Commission amount"]).toFixed(2)}`, pageWidth - 85, 510, 12);
 
       // Commissionable amount (droite)
       // rightAlign(`€ ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 70, 440, 12);
 
       // Détail séjour (ligne du bas, droite)
-      rightAlign(`1 x € ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 50, 530, 12);
+      rightAlign(`1 x € ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 85, 540, 12);
 
 
       // Taxe de séjour (montant total, droite)
