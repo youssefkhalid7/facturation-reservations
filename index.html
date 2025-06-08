@@ -2,15 +2,36 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Générateur de Factures</title>
+  <title>Générateur de Factures Booking.com</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
+  <!-- Ajoute ici les liens vers XLSX, PDFLib, JSZip si besoin -->
 </head>
 <body>
-<div class="container">
-  <h1>Générateur de Factures Clients</h1>
-  <input type="file" id="excelFile" accept=".xls,.xlsx">
-  <button onclick="processExcel()">Générer les Factures</button>
-</div>
+  <div class="container">
+    <header>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Booking.com_logo.svg" alt="Booking.com" class="logo">
+      <h1>Générateur de Factures Booking.com</h1>
+      <p>Importez votre fichier Excel pour générer automatiquement vos factures clients au format Booking.com.</p>
+    </header>
+    <main>
+      <form id="uploadForm">
+        <label for="excelFile" class="file-label">
+          <span>Choisir un fichier Excel</span>
+          <input type="file" id="excelFile" accept=".xlsx, .xls" required>
+        </label>
+        <button type="button" onclick="processExcel()">Générer les factures</button>
+      </form>
+      <div id="progress" class="progress" style="display:none;">
+        <div class="spinner"></div>
+        <span>Traitement en cours, veuillez patienter...</span>
+      </div>
+      <div id="message" class="message"></div>
+    </main>
+    <footer>
+      <p>&copy; 2024 - Générateur de Factures Booking.com</p>
+    </footer>
+  </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
