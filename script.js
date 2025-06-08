@@ -40,16 +40,16 @@ async function processExcel() {
       };
 
       // Booking number (en haut à droite)
-      rightAlign(row["Reservation number"], pageWidth - 50, 765, 12);
+      rightAlign(row["Reservation number"], pageWidth - 50, 755, 12);
 
       // Guest name (à gauche, sous "Guest information:")
-      draw(row["Guest name"], 70, 715, 12);
+      draw(row["Guest name"], 40, 715, 12);
 
       // Total guests (en face de "Total guests:")
-      draw(row["Persons"], 130, 675, 12);
+      draw(row["Persons"], 40, 675, 12);
 
       // Total units/rooms (en face de "Total units/rooms:")
-      draw(row["Rooms"], 130, 655, 12);
+      draw(row["Rooms"], 40, 635, 12);
 
       // Arrival (Check-in)
       rightAlign(row["Arrival"], pageWidth - 70, 715, 12);
