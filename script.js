@@ -42,7 +42,7 @@ async function processExcel() {
       };
 
       // Booking number (en haut à droite)
-      rightAlign(row["Reservation number"], pageWidth - 40, 710, 12);
+      rightAlign(row["Reservation number"], pageWidth - 40, 715, 12);
 
       // Date actuelle (en haut à droite, sous le numéro de réservation)
       const currentDate = new Date().toLocaleDateString('fr-FR', {
@@ -63,7 +63,7 @@ async function processExcel() {
       draw(row[personsKey], 40, 605, 12);
 
       // Total units/rooms (en face de "Total units/rooms:")
-      draw(row["Rooms"], 40, 655, 12);
+      draw(row["Rooms"], 40, 555, 12);
 
       // Arrival (Check-in)
       rightAlign(row["Arrival"], pageWidth - 40, 660, 12);
@@ -81,7 +81,7 @@ async function processExcel() {
       const helveticaBold = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
       page.drawText(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, {
         x: 40,
-        y: 450,
+        y: 455,
         size: 12,
         font: helveticaBold,
       });
@@ -101,7 +101,7 @@ async function processExcel() {
       // rightAlign(`€ ${taxeTotale}`, pageWidth - 70, 480, 12);
 
       // Total unit/room price (gauche, bas)
-      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, pageWidth - 85, 260, 12);
+      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, pageWidth - 85, 250, 12);
 
       // --- Génération du PDF ---
       const pdfBytes = await pdfDoc.save();
