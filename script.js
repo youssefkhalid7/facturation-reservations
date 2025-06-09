@@ -42,7 +42,15 @@ async function processExcel() {
       };
 
       // Booking number (en haut à droite)
-      rightAlign(row["Reservation number"], pageWidth - 40, 780, 12);
+      rightAlign(row["Reservation number"], pageWidth - 40, 750, 12);
+
+      // Date actuelle (en haut à droite, sous le numéro de réservation)
+      const currentDate = new Date().toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+      rightAlign(currentDate, pageWidth - 40, 800, 12);
 
       // Guest name (à gauche, sous "Guest information:")
       const guestName = (row["Guest name"] || row["Booker name"]).split(/[\r\n]+/)[0];
