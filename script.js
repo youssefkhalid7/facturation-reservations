@@ -42,7 +42,7 @@ async function processExcel() {
       };
 
       // Booking number (en haut à droite)
-      rightAlign(row["Reservation number"], pageWidth - 40, 750, 12);
+      rightAlign(row["Reservation number"], pageWidth - 40, 720, 12);
 
       // Date actuelle (en haut à droite, sous le numéro de réservation)
       const currentDate = new Date().toLocaleDateString('fr-FR', {
@@ -54,46 +54,46 @@ async function processExcel() {
 
       // Guest name (à gauche, sous "Guest information:")
       const guestName = (row["Guest name"] || row["Booker name"]).split(/[\r\n]+/)[0];
-      draw(guestName, 40, 720, 12);
+      draw(guestName, 40, 660, 12);
 
       // Total guests (en face de "Total guests:")
       const personsKey = Object.keys(row).find(
         k => k.trim().toLowerCase() === "persons"
       );
-      draw(row[personsKey], 40, 675, 12);
+      draw(row[personsKey], 40, 615, 12);
 
       // Total units/rooms (en face de "Total units/rooms:")
-      draw(row["Rooms"], 40, 625, 12);
+      draw(row["Rooms"], 40, 665, 12);
 
       // Arrival (Check-in)
-      rightAlign(row["Arrival"], pageWidth - 40, 730, 12);
+      rightAlign(row["Arrival"], pageWidth - 40, 670, 12);
 
       // Departure (Check-out)
-      rightAlign(row["Departure"], pageWidth - 40, 690, 12);
+      rightAlign(row["Departure"], pageWidth - 40, 630, 12);
 
       // Length of stay
-      rightAlign(`${row["Room nights"]} night${parseInt(row["Room nights"]) > 1 ? "s" : ""}`, pageWidth - 40, 645, 12);
+      rightAlign(`${row["Room nights"]} night${parseInt(row["Room nights"]) > 1 ? "s" : ""}`, pageWidth - 40, 585, 12);
 
       // Approximate arrival time (toujours "No time provided")
-      draw("No time provided", 40, 585, 12);
+      draw("No time provided", 40, 525, 12);
 
       // Total price (gauche, sous la ligne, en gras)
       const helveticaBold = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
       page.drawText(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, {
         x: 40,
-        y: 520,
+        y: 560,
         size: 12,
         font: helveticaBold,
       });
 
       // Commission amount(droite)
-      rightAlign(`€ ${parseFloat(row["Commission amount"]).toFixed(2)}`, pageWidth - 40, 500, 12);
+      rightAlign(`€ ${parseFloat(row["Commission amount"]).toFixed(2)}`, pageWidth - 40, 440, 12);
 
       // Commissionable amount (droite)
       // rightAlign(`€ ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 70, 440, 12);
 
       // Détail séjour (ligne du bas, droite)
-      rightAlign(`1 x € ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 40, 530, 12);
+      rightAlign(`1 x € ${parseFloat(row["Original amount"]).toFixed(2)}`, pageWidth - 40, 470, 12);
 
 
       // Taxe de séjour (montant total, droite)
@@ -101,7 +101,7 @@ async function processExcel() {
       // rightAlign(`€ ${taxeTotale}`, pageWidth - 70, 480, 12);
 
       // Total unit/room price (gauche, bas)
-      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, pageWidth - 85, 340, 12);
+      draw(`€ ${parseFloat(row["Final amount"]).toFixed(2)}`, pageWidth - 85, 270, 12);
 
       // --- Génération du PDF ---
       const pdfBytes = await pdfDoc.save();
