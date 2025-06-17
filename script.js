@@ -41,23 +41,23 @@ async function processExcel() {
       };
 
       // Booking number (gauche)
-      draw(row["Reservation number"], 40, 635, 12);
+      draw(row["Reservation number"], 40, 625, 12);
 
       // Check-in (droite)
-      rightAlign(row["Arrival"], pageWidth - 40, 635, 12);
+      rightAlign(row["Arrival"], pageWidth - 40, 625, 12);
 
       // Check-out (droite)
-      rightAlign(row["Departure"], pageWidth - 40, 595, 12);
+      rightAlign(row["Departure"], pageWidth - 40, 585, 12);
 
       // Guest information (gauche)
       const guestName = (row["Guest name"] || "").split(/[\r\n]+/)[0];
       draw(guestName, 40, 580, 12);
 
       // Total guests (gauche)
-      draw(row["Persons"], 40, 500, 12);
+      draw(row["Persons"], 40, 530, 12);
 
       // Total units/rooms (gauche)
-      draw(row["Rooms"], 40, 450, 12);
+      draw(row["Rooms"], 40, 480, 12);
 
       // Length of stay (droite)
       rightAlign(`${row["Room nights"]} night${parseInt(row["Room nights"]) > 1 ? "s" : ""}`, pageWidth - 40, 530, 12);
